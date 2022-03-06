@@ -1,0 +1,225 @@
+
+public class BST {
+
+    protected BSTNode root;
+    protected int size;
+
+    public BST() {
+        root = null;
+        size = 0;
+    }
+
+    public BST(int A[]) {
+        root = null;
+        size = 0;
+        for (int a : A)
+            insert(a);
+    }
+
+    public BSTNode search(int key) {
+        BSTNode tmp = root;
+        while (tmp != null) {
+            if (tmp.value == key)
+                return tmp;
+            else if (tmp.value > key)
+                tmp = tmp.left;
+            else
+                tmp = tmp.right;
+        }
+        return null;
+    }
+
+    public BSTNode insert(int val) { // complete this method
+        if (size == 0) {
+            root = new BSTNode(val);
+            size++;
+            return root;
+        }
+        BSTNode temp = root;
+        BSTNode parent = null;
+        while (temp != null) {
+            if (temp.value == val) {
+                return null;
+            }
+            else if (temp.value < val) {
+                parent = temp;
+                temp = temp.right;
+            }
+            else {
+                parent = temp;
+                temp = temp.left;
+            }
+        }
+        BSTNode newNode = new BSTNode(val);
+        newNode.parent = parent;
+        if (parent.value > val) {
+            parent.left = newNode;
+        }
+        else {
+            parent.right = newNode;
+        }
+        size++;
+        return newNode;
+    }
+
+    public boolean remove(int val) { // complete this method
+        BSTNode nodeDel = search(val);
+        if (nodeDel == null) {
+            return false;
+        }
+        if (nodeDel.left != null && nodeDel.right != null) {
+            BSTNode maxNode = findMax(nodeDel.left);
+            nodeDel.value = maxNode.value;
+            nodeDel = maxNode;
+        }
+        if (nodeDel.left == null && nodeDel.right == null) {
+            removeLeaf(nodeDel);
+        }
+        else {
+            removeNodeWithOneChild(nodeDel);
+        }
+        size--;
+        return true;
+    }
+
+    private void removeLeaf(BSTNode leaf) { // complete this method
+        if (leaf == root) {
+            root = null;
+        }
+        else {
+            BSTNode temp = leaf.parent;
+            if (leaf == temp.left) {
+                temp.left = null;
+            }
+            else {
+                temp.right = null;
+            }
+            leaf.parent = null;
+        }
+    }
+
+    private void removeNodeWithOneChild(BSTNode node) { // complete this method
+        BSTNode child;
+        if (node.left != null) {
+            child = node.left;
+            node.left = null;
+        }
+        else {
+            child = node.right;
+            node.right = null;
+        }
+        if (node == root) {
+            root = child;
+            child.parent = null;
+        }
+        else {
+            if (node == node.parent.left) {
+                node.parent.left = child;
+            }
+            else {
+                node.parent.right = child;
+            }
+            child.parent = node.parent;
+            node.parent = null;
+        }
+    }
+
+    public int getPredecessor(int key) { // complete this method
+        BSTNode temp = root;
+        int pred = Integer.MIN_VALUE;
+        while (temp != null) {
+            if (temp.value == key) {
+                return key;
+            }
+            else if (temp.value < key) {
+            pred = temp.value;
+            temp = temp.right;
+            }
+            else {
+                temp = temp.left;
+            }
+        }
+        return pred;
+    }
+
+    public int getSuccessor(int key) { // complete this method
+        BSTNode temp = root;
+        int succ = Integer.MAX_VALUE;
+        while (temp != null) {
+            if (temp.value == key) {
+                return key;
+            }
+            else if (temp.value > key) {
+                succ = temp.value;
+                temp = temp.left;
+            }
+            else {
+                temp = temp.right;
+            }
+        }
+        return succ;
+    }
+
+    public int nearestNeighbour(int key) throws Exception { // complete this method
+        int pred = getPredecessor(key);
+        int succ = getSuccessor(key);
+        if (pred == Integer.MIN_VALUE) {
+            return succ;
+        }
+        else if (succ == Integer.MAX_VALUE) {
+            return pred;
+        }
+        else {
+            if (key - pred > succ - key) {
+                return succ;
+            }
+            else {
+                return pred;
+            }
+        }
+          
+    }
+
+    private static BSTNode findMin(BSTNode node) {
+        if (null == node)
+            return null;
+        while (node.left != null)
+            node = node.left;
+        return node;
+    }
+
+    private static BSTNode findMax(BSTNode node) {
+        if (null == node)
+            return null;
+        while (node.right != null)
+            node = node.right;
+        return node;
+    }
+
+    private static int getHeight(BSTNode node) {
+        if (node == null)
+            return 0;
+        else
+            return 1 + Math.max(getHeight(node.left), getHeight(node.right));
+    }
+
+    private void print(BSTNode node) {
+        if (null != node) {
+            System.out.print(node.toString() + " ");
+            print(node.left);
+            print(node.right);
+        }
+    }
+
+    public int getHeight() {
+        return getHeight(root);
+    }
+
+    public void print() {
+        print(root);
+    }
+
+    public int getSize() {
+        return size;
+    }
+}
