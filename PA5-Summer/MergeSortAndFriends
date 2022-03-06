@@ -1,0 +1,61 @@
+import java.util.ArrayList;
+
+public class MergeSortAndFriends {
+
+	public static ArrayList<Integer> commonElements(int A[], int B[], int lenA, int lenB) { // complete this method
+		ArrayList<Integer> commonElementsList = new ArrayList<>();
+		int a = 0, b = 0;
+		while (a < lenA && b < lenB) {
+			if (A[a] < B[b]) {
+				a++;
+			}
+			else if (A[a] > B[b]) {
+				b++;
+			}
+			else {
+				commonElementsList.add(A[a]);
+				a++;
+				while (a < lenA && A[a] == B[b]) {
+					a++;
+				}
+			}
+		}
+		return commonElementsList;
+	}
+
+	public static void mergeSort(String[] array, int left, int right) { // complete this method
+		if (left < right) {
+			int mid = (left + right) / 2;
+			mergeSort(array, left, mid);
+			mergeSort(array, mid+1, right);
+			String[] mergedArray = new String[right-left+1];
+			int i = left, j = mid + 1, k = 0;
+			while (i <= mid && j <= right) {
+				if (array[i].compareTo(array[j]) < 0) {
+					mergedArray[k] = array[i];
+					i++;
+				}
+				else {
+					mergedArray[k] = array[j];
+					j++;
+				}
+				k++;
+			}
+			while (i <= mid) {
+				mergedArray[k] = array[i];
+				i++;
+				k++;
+			}
+			while (j <= right) {
+				mergedArray[k] = array[j];
+				j++;
+				k++;
+			}
+		
+		for (int s = 0; s <= right - left; s++) {
+			array[s + left] = mergedArray[s];
+			}
+		}
+		
+	}
+}
